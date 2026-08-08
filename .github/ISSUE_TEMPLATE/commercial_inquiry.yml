@@ -1,0 +1,59 @@
+name: Commercial inquiry
+description: Start a public, high-level discussion about licensing or an AIONEX adaptation.
+title: "[Commercial] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Repository issues are public. Share only a non-confidential outline. Do not include customer identities, proprietary documents, credentials, budgets, personal contact details, or regulated data. If private coordination is needed, request it without disclosing the sensitive material.
+  - type: dropdown
+    id: inquiry_type
+    attributes:
+      label: Inquiry type
+      options:
+        - Commercial licensing
+        - Custom product adaptation
+        - Systems integration
+        - Technical evaluation
+        - Partnership exploration
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Public context
+      description: At a high level, what organization type or workflow is being considered? Do not name a confidential party.
+    validations:
+      required: true
+  - type: textarea
+    id: goals
+    attributes:
+      label: Desired capabilities
+      description: Describe the user needs and intended outcome without assuming the preview is production-ready.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Relevant constraints
+      description: List non-confidential platform, deployment, accessibility, security, privacy, or integration requirements.
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Current stage
+      options:
+        - Early exploration
+        - Requirements discovery
+        - Technical evaluation
+        - Planning a defined project
+    validations:
+      required: true
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Public issue acknowledgement
+      options:
+        - label: I understand this issue is public and contains no confidential information, personal contact data, or secrets.
+          required: true
+        - label: I understand v0.1.0 is a local demo with no authentication and is not production-ready.
+          required: true

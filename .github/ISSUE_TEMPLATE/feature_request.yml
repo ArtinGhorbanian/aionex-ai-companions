@@ -1,0 +1,59 @@
+name: Feature request
+description: "Propose an improvement to AIONEX: Your Personal AI Companions."
+title: "[Feature] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the user problem before the implementation. Planned work is evaluated against the project's local-demo scope, privacy boundaries, and proprietary license.
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What difficulty or unmet need should this change address?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe observable behavior and who benefits without inventing metrics.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Explain the smallest practical design, including relevant routes or interface areas.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What simpler workarounds or designs did you consider?
+  - type: textarea
+    id: risk
+    attributes:
+      label: Security, privacy, and dependency impact
+      description: Identify new data, external services, permissions, packages, or attack surface.
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Acceptance checks
+      description: How could maintainers verify the feature without real personal data or credentials?
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and the roadmap for related work.
+          required: true
+        - label: The request does not assume production readiness, authentication, or multi-user support already exists.
+          required: true
+        - label: I have not included confidential information or personal data.
+          required: true

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AIONEX is a local-first AI companion demo with five personas, streaming chat, memory controls, summaries, mood insights, and text-to-speech.">
+    <meta name="theme-color" content="#081323">
+    <title>AIONEX: Your Personal AI Companions</title>
+    <link rel="icon" href="{{ url_for('static', filename='aionex-mark.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css" integrity="sha384-oaMLBGEzBOJx3UHwac0cVndtX5fxGQIfnAeFZ35RTgqPcYlbprH9o9PUV/F8Le07" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='0.1.0') }}">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <!-- This div is controlled by JavaScript to create a custom cursor effect. -->
+    <div class="custom-cursor" aria-hidden="true"></div>
+
+    <!-- Main application layout container, using Flexbox to structure the sidebar and main content. -->
+    <div class="app-layout">
+
+        <!-- =================================================================
+             SIDEBAR: Navigation, Conversation History, and Settings
+             ================================================================= -->
+        <aside id="app-sidebar" class="dashboard-sidebar">
+
+            <!-- Sidebar Header: Contains the application logo. -->
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <img src="{{ url_for('static', filename='aionex-mark.svg') }}" alt="" width="52" height="52" class="logo-img">
+                    <div class="brand-copy">
+                        <span class="brand-name">AIONEX</span>
+                        <span class="brand-tagline">Personal AI Companions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Primary Navigation Buttons -->
+            <nav class="sidebar-nav">
+                <!-- Button to start a new chat, returning to the persona selector. -->
+                <button type="button" id="new-chat-btn" class="nav-button active">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                    <span data-translate-key="new_chat">New Chat</span>
+                </button>
+                <!-- Button to view the "Shared Memories" screen. -->
+                <button type="button" id="memories-btn" class="nav-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    <span data-translate-key="shared_memories">Our Memories</span>
+                </button>
+            </nav>
+
+            <!-- Conversation History Section -->
+            <div class="conversation-history">
+                <h2 data-translate-key="history">History</h2>
+                <!-- This div is dynamically populated by JavaScript with past conversations. -->
+                <div id="history-sections"></div>
+            </div>
+
+            <!-- Sidebar Footer: Contains the settings button. -->
+            <div class="sidebar-footer">
+                <button type="button" id="settings-btn" class="nav-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span data-translate-key="settings">Settings</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- =================================================================
+             MAIN CONTENT AREA: Displays the current view (Selector, Chat, or Memories)
+             ================================================================= -->
+        <main id="main-content" class="main-content">
+
+            <!-- Header for mobile view, containing the hamburger menu button. -->
+            <div class="main-header">
+                <button type="button" id="hamburger-menu" class="hamburger-menu" aria-label="Open navigation" aria-controls="app-sidebar" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+            </div>
+
+            <!-- 1. Persona Selector View (Default View) -->
+            <section id="persona-selector-view" aria-labelledby="selector-title">
+                <div class="selector-header">
+                    <p class="eyebrow">Built by AIONEX</p>
+                    <h1 id="selector-title" data-translate-key="choose_companion">Choose Your Companion</h1>
+                    <p data-translate-key="start_conversation">Start a conversation by selecting a personality.</p>
+                </div>
+                <div class="persona-grid">
+                    <!-- Each card represents a clickable AI persona. Data attributes are used by JS to identify the persona and its properties. -->
+                    <button type="button" class="persona-card" data-persona-key="AURA" data-theme-class="theme-aura" data-gender="female"><span class="persona-orb" aria-hidden="true">A</span><h2 data-translate-key="AURA_name">Aura</h2><p class="tagline" data-translate-key="AURA_tagline">The Mindful Guide</p><span class="glass-description"><span data-translate-key="AURA_description">...</span></span></button>
+                    <button type="button" class="persona-card" data-persona-key="ZANE" data-theme-class="theme-zane" data-gender="male"><span class="persona-orb" aria-hidden="true">Z</span><h2 data-translate-key="ZANE_name">Zane</h2><p class="tagline" data-translate-key="ZANE_tagline">The Tech Innovator</p><span class="glass-description"><span data-translate-key="ZANE_description">...</span></span></button>
+                    <button type="button" class="persona-card" data-persona-key="LYRA" data-theme-class="theme-lyra" data-gender="female"><span class="persona-orb" aria-hidden="true">L</span><h2 data-translate-key="LYRA_name">Lyra</h2><p class="tagline" data-translate-key="LYRA_tagline">The Creative Storyteller</p><span class="glass-description"><span data-translate-key="LYRA_description">...</span></span></button>
+                    <button type="button" class="persona-card" data-persona-key="REX" data-theme-class="theme-rex" data-gender="male"><span class="persona-orb" aria-hidden="true">R</span><h2 data-translate-key="REX_name">Rex</h2><p class="tagline" data-translate-key="REX_tagline">The Energetic Coach</p><span class="glass-description"><span data-translate-key="REX_description">...</span></span></button>
+                    <button type="button" class="persona-card" data-persona-key="NOVA" data-theme-class="theme-nova" data-gender="female"><span class="persona-orb" aria-hidden="true">N</span><h2 data-translate-key="NOVA_name">Nova</h2><p class="tagline" data-translate-key="NOVA_tagline">The Cosmic Explorer</p><span class="glass-description"><span data-translate-key="NOVA_description">...</span></span></button>
+                </div>
+            </section>
+
+            <!-- 2. Chat View (Initially hidden) -->
+            <div id="chat-view" class="hidden">
+                <header id="chat-header">
+                     <button type="button" id="back-btn" class="back-button" aria-label="Go back to companion selection"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+                    <div class="persona-info"><h2 id="persona-name"></h2><p id="persona-tagline"></p></div>
+                    <!-- Chat-specific action buttons, initially disabled. -->
+                    <button type="button" id="analyze-mood-btn" class="chat-header-btn disabled" data-translate-key-title="mood_title" title="Analyze Mood" aria-label="Analyze Mood" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
+                    </button>
+                    <button type="button" id="summarize-btn" class="chat-header-btn disabled" data-translate-key-title="summarize_title" title="Summarize Conversation" aria-label="Summarize Conversation" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    </button>
+                </header>
+                <!-- Container for all chat messages, populated by JS. -->
+                <div id="chat-box" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversation messages"></div>
+                <footer id="input-area">
+                    <!-- Quick-reply mood buttons -->
+                    <div id="mood-tracker">
+                        <span class="mood-tracker-label" data-translate-key="how_feeling">How are you feeling?</span>
+                        <button type="button" class="mood-btn" data-mood="happy" aria-label="Send: I am feeling happy" title="Happy">😊</button>
+                        <button type="button" class="mood-btn" data-mood="neutral" aria-label="Send: I am feeling neutral" title="Neutral">😐</button>
+                        <button type="button" class="mood-btn" data-mood="sad" aria-label="Send: I am feeling sad" title="Sad">😔</button>
+                        <button type="button" class="mood-btn" data-mood="excited" aria-label="Send: I am feeling excited" title="Excited">🎉</button>
+                    </div>
+                    <!-- Main text input and send button. -->
+                    <div id="input-container">
+                        <label for="user-input" class="sr-only">Message</label>
+                        <textarea id="user-input" data-translate-key-placeholder="type_message" placeholder="Type your message..." rows="1" maxlength="4000"></textarea>
+                        <button type="button" id="send-btn" aria-label="Send Message"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
+                    </div>
+                </footer>
+            </div>
+
+            <!-- 3. Shared Memories View (Initially hidden) -->
+            <div id="memories-view" class="hidden">
+                <header class="view-header">
+                    <h2 data-translate-key="shared_memories_title">Our Shared Memories</h2>
+                    <p data-translate-key="shared_memories_desc">Here are some moments from our conversations that I've saved.</p>
+                </header>
+                <!-- Grid where memory "polaroid" cards will be displayed. -->
+                <div id="memories-grid" class="memories-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- =================================================================
+         MODAL: Settings Panel
+         ================================================================= -->
+    <!-- This modal is hidden by default and is shown when the settings button is clicked. -->
+    <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="modal-content" tabindex="-1">
+            <button type="button" id="close-modal-btn" class="close-btn" aria-label="Close settings">&times;</button>
+            <h2 id="settings-title" data-translate-key="settings">Settings</h2>
+
+            <!-- Language Selection -->
+            <div class="setting-item">
+                <label for="language-switcher" data-translate-key="language">Language</label>
+                <select id="language-switcher">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="fr">Français</option>
+                </select>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <div class="setting-item">
+                <span id="dark-mode-label" data-translate-key="dark_mode">Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle" aria-labelledby="dark-mode-label">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <!-- Personal memory is privacy-preserving by default and requires opt-in. -->
+            <div class="setting-item setting-item-stacked">
+                <div class="setting-copy">
+                    <span id="memory-enabled-label" data-translate-key="memory_opt_in">Personal memory</span>
+                    <small data-translate-key="memory_opt_in_hint">Allow AIONEX to extract facts and create shared memories from future chats.</small>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="memory-enabled-toggle" aria-labelledby="memory-enabled-label">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+
+            <!-- AI Memory Management Section -->
+            <div id="memory-management-section" class="setting-section">
+                <h3 data-translate-key="ai_memory">AI Memory</h3>
+                <p class="memory-description" data-translate-key="memory_description">When personal memory is enabled, AIONEX uses these facts to personalize conversations. You can remove any fact.</p>
+                <p class="privacy-note" data-translate-key="privacy_notice">This local demo stores conversations in SQLite and sends relevant content to the configured OpenAI API. Do not enter sensitive information.</p>
+                <!-- List of remembered facts, populated by JS. -->
+                <ul id="memory-list"></ul>
+            </div>
+        </div>
+    </div>
+    <div id="app-status" class="sr-only" role="status" aria-live="polite"></div>
+
+    <!-- =================================================================
+         SCRIPTS
+         ================================================================= -->
+    <!-- Third-party libraries for Markdown parsing and code syntax highlighting. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/marked@18.0.9/lib/marked.umd.js" integrity="sha384-kyb7rY2xnKgiRpRdAeNJxQ8e2SiGZy1m+FK9yME6M0eGJpg7EFaGGvf7+JSirgqE" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js" integrity="sha384-RH2xi4eIQ/gjtbs9fUXM68sLSi99C7ZWBRX1vDrVv6GQXRibxXLbwO2NGZB74MbU" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Main application script file. -->
+    <script defer src="{{ url_for('static', filename='script.js', v='0.1.0') }}"></script>
+</body>
+</html>

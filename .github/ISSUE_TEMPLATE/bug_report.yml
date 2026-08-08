@@ -1,0 +1,75 @@
+name: Bug report
+description: "Report a reproducible defect in AIONEX: Your Personal AI Companions."
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. This project is a local single-user demo. Remove credentials, conversations, databases, personal data, and full local paths before submitting.
+  - type: dropdown
+    id: version
+    attributes:
+      label: Version
+      description: Select the code version where the defect occurs.
+      options:
+        - v0.1.0
+        - Current main branch
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: State your operating system family, Python version, and browser version.
+      placeholder: Windows, Python 3.13, current Chromium-based browser
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: Describe the observable problem and the feature affected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest deterministic reproduction using synthetic content.
+      placeholder: |
+        1. Start the local server with...
+        2. Open...
+        3. Select...
+        4. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include redacted error text if useful.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Verification already attempted
+      description: List relevant tests, lint checks, clean-database checks, or browser checks and their results.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: I removed secrets, private conversations, databases, personal data, and identifying local paths.
+          required: true
+        - label: This is not a confidential security vulnerability.
+          required: true
+        - label: I searched existing issues for the same problem.
+          required: true

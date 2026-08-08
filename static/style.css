@@ -1,0 +1,1220 @@
+/**
+ * @file Main stylesheet for AIONEX: Your Personal AI Companions.
+ * @description This file contains all the styles for the application's layout,
+ * components, theming, and responsiveness. It utilizes CSS Custom Properties (variables)
+ * for easy theming (light/dark modes) and persona-specific backgrounds. The layout is
+ * built with Flexbox, and it includes support for RTL languages and mobile devices.
+ */
+
+
+/* ==========================================================================
+   --- CSS Variables & Theming ---
+   ========================================================================== */
+
+/* * Variables are defined in :root for global scope. This allows for easy
+ * theme switching by just redefining these variables on a parent class.
+ */
+:root {
+    /* Typography */
+    --font-primary: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-handwritten: "Segoe Print", "Bradley Hand", cursive;
+
+    /* Light Theme Colors */
+    --bg-main: #f7f9fc;
+    --bg-sidebar: rgba(255, 255, 255, 0.6);
+    --surface-color: #ffffff; /* Color for cards, modals, and input areas */
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --accent-neutral: #4f46e5; /* Primary brand color for buttons and active states */
+
+    /* Effects */
+    --shadow-color-light: rgba(100, 116, 139, 0.08);
+    --shadow-color-medium: rgba(100, 116, 139, 0.12);
+    --cursor-color: #4f46e5;
+    --backdrop-blur: 12px; /* Used for the "glassmorphism" effect */
+}
+
+/* Redefine variables when the body has the .dark-mode class. */
+body.dark-mode {
+    --bg-main: #111827;
+    --bg-sidebar: rgba(17, 24, 39, 0.6);
+    --surface-color: #1f2937;
+    --text-primary: #f9fafb;
+    --text-secondary: #9ca3af;
+    --border-color: #374151;
+    --shadow-color-light: rgba(0, 0, 0, 0.2);
+    --shadow-color-medium: rgba(0, 0, 0, 0.3);
+}
+
+
+/* ==========================================================================
+   --- Base & Body Styles ---
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    overflow: hidden; /* Prevents scrolling on the body itself */
+    -webkit-font-smoothing: antialiased; /* Improves font rendering on WebKit browsers */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+summary,
+select {
+    touch-action: manipulation;
+}
+
+:focus-visible {
+    outline: 3px solid var(--accent-neutral);
+    outline-offset: 3px;
+}
+
+.skip-link {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 3000;
+    transform: translateY(-160%);
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #111827;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+/* The custom cursor is only visible when hovering over the body. */
+body:hover .custom-cursor {
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   --- Custom Cursor & Main Layout ---
+   ========================================================================== */
+
+.custom-cursor {
+    display: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--cursor-color);
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%); /* Center the cursor on the mouse pointer */
+    pointer-events: none; /* Clicks should pass through the cursor element */
+    z-index: 9999;
+    transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+    opacity: 0;
+}
+
+.app-layout {
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body { cursor: none; }
+    .custom-cursor { display: block; }
+}
+
+.dashboard-sidebar {
+    width: 280px;
+    background-color: var(--bg-sidebar);
+    backdrop-filter: blur(var(--backdrop-blur));
+    -webkit-backdrop-filter: blur(var(--backdrop-blur)); /* For Safari support */
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Prevents the sidebar from shrinking */
+    height: 100vh;
+    height: 100dvh;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.3s, border-color 0.3s;
+    z-index: 1001; /* Keeps sidebar above main content during transitions */
+}
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    min-width: 0;
+    min-height: 0;
+    transition: background-image 0.5s ease-in-out;
+    position: relative;
+}
+
+/* Header for mobile hamburger menu */
+.main-header {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    left: 30px;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 100;
+}
+
+.hamburger-menu {
+    display: none; /* Hidden by default, shown in mobile view */
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--surface-color);
+    box-shadow: 0 4px 16px var(--shadow-color-light);
+    color: var(--text-primary);
+}
+
+
+/* ==========================================================================
+   --- Sidebar Components ---
+   ========================================================================== */
+
+.sidebar-header {
+    padding: 22px 20px 0;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.logo-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-img {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+}
+
+.brand-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.brand-name {
+    color: var(--text-primary);
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.brand-tagline {
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    line-height: 1.35;
+}
+
+.sidebar-nav {
+    padding: 0 24px;
+}
+
+.nav-button {
+    width: 100%;
+    padding: 12px 18px;
+    background-color: transparent;
+    border: none;
+    color: var(--text-secondary);
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    background-color: var(--accent-neutral);
+    color: white;
+}
+
+.nav-button:active {
+    transform: scale(0.97); /* Subtle click feedback */
+}
+
+.conversation-history {
+    flex-grow: 1; /* Takes up remaining vertical space */
+    overflow-y: auto;
+    padding: 0 24px;
+}
+
+.conversation-history h2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: 30px 0 15px;
+    padding: 0 10px;
+}
+
+.sidebar-footer {
+    padding: 24px;
+    margin-top: auto; /* Pushes the footer to the bottom */
+}
+
+
+/* ==========================================================================
+   --- Conversation History List ---
+   ========================================================================== */
+
+#history-sections {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.history-section summary {
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    list-style: none; /* Removes the default disclosure triangle */
+}
+.history-section summary::-webkit-details-marker { display: none; } /* For Chrome/Safari */
+
+.history-section summary:hover {
+    background-color: var(--surface-color);
+}
+
+.history-item {
+    min-height: 44px;
+    padding: 4px 4px 4px 10px;
+    border-radius: 8px;
+    margin: 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+    /* Animation for items fading in */
+    opacity: 0;
+    animation: slideUpFadeIn 0.5s ease forwards;
+}
+
+.history-item:hover {
+    background-color: var(--border-color);
+}
+
+.history-open-btn {
+    width: calc(100% - 44px);
+    min-height: 44px;
+    padding: 8px 10px;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.delete-btn {
+    position: absolute;
+    right: 2px;
+    top: 0;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+.history-item:hover .delete-btn {
+    opacity: 1; /* Show on hover */
+}
+.history-item:focus-within .delete-btn {
+    opacity: 1;
+}
+.delete-btn:hover {
+    color: #e53e3e; /* Red color on hover for delete action */
+}
+
+
+/* ==========================================================================
+   --- Persona Selector View ---
+   ========================================================================== */
+
+#persona-selector-view {
+    width: 100%;
+    padding: clamp(72px, 8vw, 96px) clamp(20px, 5vw, 64px) 48px;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.selector-header h1 {
+    margin: 0;
+    font-size: clamp(2.15rem, 5vw, 3.6rem);
+    line-height: 1.05;
+    font-weight: 600;
+}
+
+.eyebrow {
+    margin: 0 0 14px !important;
+    color: var(--accent-neutral) !important;
+    font-size: 0.78rem !important;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.selector-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-top: 14px;
+}
+
+.persona-grid {
+    display: grid;
+    /* Creates a responsive grid that adjusts columns based on available width. */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    margin: 38px auto 0;
+    max-width: 1320px;
+}
+
+.persona-card {
+    width: 100%;
+    min-height: 250px;
+    border-radius: 20px;
+    padding: 30px 20px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-sidebar); /* Semi-transparent background */
+    box-shadow: 0 4px 16px var(--shadow-color-light);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+    cursor: pointer;
+    color: var(--text-primary);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    /* Animation for cards appearing */
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideUpFadeIn 0.6s ease-out forwards;
+}
+
+.persona-card:hover {
+    transform: translateY(-12px) scale(1.03); /* "Lift" effect on hover */
+    box-shadow: 0 15px 30px var(--shadow-color-medium);
+}
+
+.persona-card:focus-visible {
+    border-color: var(--accent-neutral);
+}
+
+.persona-orb {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 20px;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--accent-neutral) 35%, var(--border-color));
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--accent-neutral) 13%, var(--surface-color));
+    color: var(--accent-neutral);
+    font-weight: 800;
+    font-size: 1.25rem;
+}
+
+.persona-card h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.persona-card .tagline {
+    font-weight: 500;
+    margin: 8px 0;
+    color: var(--text-secondary);
+}
+
+/* Description that appears on hover */
+.glass-description {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: var(--bg-sidebar);
+    backdrop-filter: blur(var(--backdrop-blur));
+    border-top: 1px solid var(--border-color);
+    opacity: 0;
+    transform: translateY(100%); /* Initially hidden below the card */
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.persona-card:hover .glass-description,
+.persona-card:focus-visible .glass-description {
+    opacity: 1;
+    transform: translateY(0); /* Slides up into view on hover */
+}
+
+.glass-description > span {
+    display: block;
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+
+/* ==========================================================================
+   --- Chat View ---
+   ========================================================================== */
+
+#chat-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Chat Header */
+#chat-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(8, 19, 35, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(var(--backdrop-blur));
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    margin-right: 15px;
+    /* Uses persona-specific color if available, otherwise falls back to default. */
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+.back-button:hover {
+    transform: scale(1.1);
+}
+
+.persona-info {
+    flex-grow: 1; /* Pushes header buttons to the right */
+}
+
+#chat-header .persona-info h2 {
+    margin: 0;
+    font-weight: 600;
+    color: #ffffff;
+}
+#chat-header .persona-info p {
+    margin: 2px 0 0;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.chat-header-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    margin-left: 10px;
+    color: #cbd5e1;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chat-header-btn:hover:not(.disabled) {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+.chat-header-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Chat Message Area */
+#chat-box {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    display: flex;
+    max-width: 75%;
+    margin-bottom: 10px;
+    flex-direction: column;
+}
+
+.message.user-message {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+.message.ai-message,
+.message.assistant-message,
+.message.system-message,
+.message.summary-message {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.message-content {
+    padding: 12px 20px;
+    border-radius: 20px;
+    line-height: 1.6;
+    box-shadow: 0 4px 10px var(--shadow-color-light);
+    animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    word-wrap: break-word; /* Prevents long words from overflowing */
+}
+
+.user-message .message-content {
+    background-color: var(--accent-neutral);
+    color: white;
+    border-bottom-right-radius: 5px; /* "Tail" effect for message bubble */
+}
+
+.ai-message .message-content,
+.assistant-message .message-content {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-bottom-left-radius: 5px; /* "Tail" effect for message bubble */
+    border: 1px solid var(--border-color);
+}
+
+.system-message .message-content,
+.summary-message .message-content {
+    background-color: var(--border-color);
+    border-left: 4px solid var(--accent-neutral); /* Distinctive style for system messages */
+    font-style: italic;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Message Action Buttons (Copy, Speak) */
+.message-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s;
+}
+.message:hover .message-actions,
+.message:focus-within .message-actions {
+    opacity: 1; /* Show on message hover */
+}
+
+.action-btn {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+}
+.action-btn:hover {
+    background-color: var(--border-color);
+}
+
+/* Markdown Content Styling */
+.message-content p { margin: 0 0 10px; }
+.message-content p:last-child { margin-bottom: 0; }
+.message-content pre {
+    background-color: #282c34; /* Overrides default theme for consistency */
+    color: #abb2bf;
+    padding: 15px;
+    border-radius: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Chat Input Area */
+#input-area {
+    padding: 10px 30px 20px;
+    border-top: 1px solid var(--border-color);
+    background: var(--surface-color);
+    flex-shrink: 0;
+}
+
+#input-container {
+    display: flex;
+    align-items: flex-end;
+}
+
+#user-input {
+    flex-grow: 1;
+    background-color: var(--border-color);
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    padding: 15px 20px;
+    resize: none;
+    max-height: 160px;
+    overflow-y: auto;
+    transition: all 0.3s;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: var(--accent-neutral);
+    background-color: var(--surface-color);
+}
+
+#send-btn {
+    background-color: var(--accent-neutral);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    min-width: 50px; /* Ensures button is circular even without text */
+    height: 50px;
+    margin-left: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Mood Selection Buttons */
+#mood-tracker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.mood-tracker-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.mood-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px;
+    border-radius: 12px;
+}
+.mood-btn:hover {
+    transform: scale(1.2);
+}
+
+.mood-btn:disabled,
+#send-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
+
+/* ==========================================================================
+   --- UI States & Helpers (Typing, Empty Chat, etc.) ---
+   ========================================================================== */
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: var(--surface-color);
+    border-radius: 20px;
+    border-bottom-left-radius: 5px;
+    box-shadow: 0 4px 10px var(--shadow-color-light);
+}
+.typing-indicator span {
+    height: 8px;
+    width: 8px;
+    background-color: #94a3b8;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.empty-state {
+    margin: auto;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.starters-container {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.starter-btn {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-primary);
+}
+.starter-btn:hover {
+    background: var(--accent-neutral);
+    border-color: var(--accent-neutral);
+    color: white;
+}
+
+
+/* ==========================================================================
+   --- Settings Modal ---
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none; /* Not interactive when hidden */
+}
+.modal-overlay:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background: var(--surface-color);
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: min(90vw, 500px);
+    max-height: min(90dvh, 760px);
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+}
+.modal-overlay:not(.hidden) .modal-content {
+    transform: scale(1); /* "Pop in" effect */
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.setting-item:last-child {
+    border-bottom: none;
+}
+.setting-item label {
+    font-weight: 500;
+}
+.setting-copy {
+    display: grid;
+    gap: 4px;
+    max-width: min(75%, 420px);
+}
+.setting-copy > span {
+    font-weight: 600;
+}
+.setting-copy small {
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+.setting-item-stacked {
+    gap: 20px;
+}
+.setting-item select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-main);
+    color: var(--text-primary);
+}
+
+.setting-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+.setting-section h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+.memory-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0 0 15px;
+}
+
+.privacy-note {
+    margin: -4px 0 16px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-main);
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+#memory-list {
+    list-style: none;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+.memory-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-main);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+.memory-item-key { font-weight: 500; margin-right: 10px; }
+.memory-item-value {
+    color: var(--text-secondary);
+    flex-grow: 1;
+    text-align: right;
+    /* Prevent long values from breaking the layout */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.memory-delete-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-left: 15px;
+    font-size: 1.3rem;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+}
+.memory-delete-btn:hover { color: #e53e3e; }
+
+/* Dark Mode Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+}
+.switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: var(--border-color);
+    transition: .4s;
+    border-radius: 28px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent-neutral); }
+input:checked + .slider:before { transform: translateX(22px); }
+.switch input:focus-visible + .slider {
+    outline: 3px solid var(--accent-neutral);
+    outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   --- Persona-Specific Themes ---
+   ========================================================================== */
+
+/* * Each theme class sets a background gradient for the main content area
+ * and redefines CSS variables for persona-specific text and cursor colors.
+ */
+.theme-aura { background-image: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); --theme-text-primary: #3d3a6b; --theme-text-secondary: #5c598b; --cursor-color: #a881e6; }
+.theme-zane { background-image: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); --theme-text-primary: #4a4e69; --theme-text-secondary: #6b7091; --cursor-color: #f7a4c3; }
+.theme-lyra { background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%); --theme-text-primary: #8b4513; --theme-text-secondary: #a0522d; --cursor-color: #fd9f85; }
+.theme-rex { background: linear-gradient(135deg, #ff7e5f, #feb47b); --theme-text-primary: #4d260f; --theme-text-secondary: #6b3e21; --cursor-color: #ff7e5f; }
+.theme-nova { background-image: linear-gradient(135deg, #304352 0%, #d7d2cc 100%); --theme-text-primary: #ffffff; --theme-text-secondary: #e0e0e0; --cursor-color: #d7d2cc; }
+
+
+/* ==========================================================================
+   --- Shared Memories View ---
+   ========================================================================== */
+
+#memories-view {
+    padding: 30px 50px;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+.view-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.view-header h2 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.view-header p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.memories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+.memory-card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 20px var(--shadow-color-light);
+    transform: rotate(calc(var(--rotation, 0) * 1deg)); /* Apply JS-driven random rotation */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: slideUpFadeIn 0.6s ease-out forwards;
+}
+.memory-card:hover {
+    transform: translateY(-10px) scale(1.05) rotate(calc(var(--rotation, 0) * 0.5deg));
+    box-shadow: 0 10px 30px var(--shadow-color-medium);
+    z-index: 5;
+}
+.memory-card p {
+    font-family: var(--font-handwritten);
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin: 0 0 15px 0;
+    color: var(--text-primary);
+}
+.memory-card .timestamp {
+    font-family: var(--font-primary);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+
+/* ==========================================================================
+   --- RTL (Right-to-Left) Language Support ---
+   ========================================================================== */
+
+html[dir="rtl"] .dashboard-sidebar { border-right: none; border-left: 1px solid var(--border-color); }
+html[dir="rtl"] .nav-button { text-align: right; }
+html[dir="rtl"] .message.user-message { align-self: flex-start; align-items: flex-start; }
+html[dir="rtl"] .message.ai-message, html[dir="rtl"] .message.system-message { align-self: flex-end; align-items: flex-end; }
+html[dir="rtl"] .back-button { transform: rotate(180deg); margin-left: 15px; margin-right: 0; }
+html[dir="rtl"] #send-btn { margin-left: 0; margin-right: 15px; }
+html[dir="rtl"] .history-section summary { padding-right: 15px; }
+html[dir="rtl"] .delete-btn { right: auto; left: 15px; }
+html[dir="rtl"] .memory-item-value { text-align: left; }
+html[dir="rtl"] .memory-delete-btn { margin-left: 0; margin-right: 15px; }
+html[dir="rtl"] .setting-item { flex-direction: row-reverse; }
+html[dir="rtl"] .setting-item label { margin-left: 10px; }
+
+
+/* ==========================================================================
+   --- Responsive Design & Animations ---
+   ========================================================================== */
+
+/* Media query for tablets and mobile devices */
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        position: fixed;
+        height: 100dvh;
+        transform: translateX(-100%); /* Hide sidebar off-screen by default */
+    }
+    .dashboard-sidebar.sidebar-open {
+        transform: translateX(0); /* Slide in when active */
+    }
+    /* A semi-transparent overlay shown when the sidebar is open on mobile */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        z-index: 1000;
+    }
+    .hamburger-menu {
+        display: block; /* Show the hamburger menu button */
+        z-index: 1002;
+        transition: transform 0.25s ease;
+    }
+    .main-header {
+        justify-content: flex-start;
+        z-index: 1002;
+    }
+    .dashboard-sidebar.sidebar-open + .main-content .hamburger-menu {
+        transform: translateX(250px);
+    }
+    #chat-box { padding: 15px; }
+    #input-area { padding: 10px 15px 15px; }
+    #chat-header { padding-left: 90px; padding-right: 15px; }
+    #memories-view { padding: 20px; }
+    #persona-selector-view { padding-top: 82px; }
+    .persona-grid { grid-template-columns: 1fr; }
+    .view-header h2 { font-size: 2rem; }
+    #mood-tracker { justify-content: center; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .custom-cursor { display: none; }
+    .delete-btn,
+    .message-actions { opacity: 1; }
+    .glass-description {
+        position: static;
+        margin: 18px -20px -30px;
+        opacity: 1;
+        transform: none;
+        max-height: none;
+    }
+    .persona-card:hover { transform: none; }
+}
+
+@media (max-width: 480px) {
+    .main-header { top: 12px; right: 14px; left: 14px; }
+    #chat-header { padding: 10px 12px 10px 74px; }
+    #chat-header .persona-info p { display: none; }
+    .chat-header-btn { margin-left: 4px; }
+    #mood-tracker { flex-wrap: wrap; gap: 6px; }
+    .mood-tracker-label { flex-basis: 100%; }
+    .message { max-width: 90%; }
+    .modal-content { padding: 24px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .custom-cursor { display: none; }
+}
+
+/* Keyframe Animations */
+@keyframes slideUpFadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1.0); }
+}
+
+/* Utility class to hide elements accessibly. */
+.hidden {
+    display: none !important;
+}

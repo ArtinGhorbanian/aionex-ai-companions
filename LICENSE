@@ -1,0 +1,89 @@
+AIONEX PROPRIETARY LICENSE
+
+Copyright © 2026 AIONEX. All Rights Reserved.
+
+1. Ownership
+
+The software, source code, user interface, documentation, and other original
+materials in this repository (collectively, the "Software") are proprietary to
+AIONEX, except for third-party materials identified in THIRD_PARTY_NOTICES.md or
+in their own notices. No ownership rights are transferred by access to the
+Software.
+
+2. Limited evaluation permission
+
+Subject to this license, AIONEX grants a limited, revocable, non-exclusive,
+non-transferable permission to view the source code and run one local instance
+solely to evaluate the Software. A private working copy may be made, and private
+changes may be prepared, only as reasonably necessary for that evaluation or to
+propose a contribution to AIONEX through this repository's contribution
+process.
+
+This permission does not authorize production use, provision of a hosted or
+managed service, use in business operations, or any other commercial
+exploitation.
+
+3. Restrictions
+
+Unless AIONEX gives prior written permission, you may not:
+
+- copy the Software except as expressly allowed in Section 2;
+- publish, distribute, redistribute, transmit, or make the Software available
+  to another person;
+- modify, adapt, translate, or create derivative works except privately as
+  expressly allowed in Section 2;
+- sublicense, sell, rent, lease, assign, or otherwise transfer the Software or
+  any rights in it;
+- use the Software, its output, or a derivative for commercial purposes;
+- offer the Software or a derivative as a product, service, or hosted
+  application; or
+- remove or alter copyright, license, attribution, or proprietary notices.
+
+Rights that a repository hosting platform necessarily grants under its
+mandatory terms remain governed by those terms and do not create any broader
+license from AIONEX.
+
+4. Contributions
+
+Submitting a contribution does not change the proprietary status of the
+Software. Contributions are governed by CONTRIBUTING.md and any rights stated
+there. AIONEX is not required to accept or use a contribution.
+
+5. Third-party materials and services
+
+Third-party libraries, assets, APIs, and services are owned and licensed by
+their respective rights holders. Their terms apply independently. This license
+does not grant rights to OpenAI services, models, or other third-party
+materials. See THIRD_PARTY_NOTICES.md.
+
+6. No warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY
+KIND, EXPRESS OR IMPLIED, TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW.
+AIONEX DOES NOT WARRANT THAT THE SOFTWARE IS ERROR-FREE, SECURE, AVAILABLE, OR
+SUITABLE FOR A PARTICULAR PURPOSE.
+
+7. Limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, AIONEX WILL NOT BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR OTHER
+DAMAGES ARISING FROM ACCESS TO OR USE OF THE SOFTWARE.
+
+8. Termination
+
+The permission in Section 2 terminates automatically if you breach this
+license. On termination, stop using the Software and delete copies under your
+control, except where retention is required by law.
+
+9. Permissions
+
+Requests for broader use, redistribution, modification, sublicensing, resale,
+or commercial licensing must be directed to AIONEX through a verified channel
+associated with this repository. Permission is effective only when provided in
+writing by AIONEX.
+
+10. Applicable law
+
+Nothing in this license excludes rights or obligations that cannot lawfully be
+excluded. No statement here is a guarantee that every provision is enforceable
+in every jurisdiction.

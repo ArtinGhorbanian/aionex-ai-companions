@@ -1,0 +1,55 @@
+name: Question
+description: Ask a focused setup, usage, or contribution question.
+title: "[Question] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Review README.md, SUPPORT.md, SECURITY.md, and existing issues first. Never paste an API key, `.env` file, database, private conversation, or personal information.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Local installation
+        - Environment configuration
+        - User interface or accessibility
+        - AI-backed feature behavior
+        - Local data and memory
+        - Testing or contribution
+        - Licensing or permitted use
+        - Other documented behavior
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Ask one specific question and explain the result you are trying to achieve.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Non-sensitive context
+      description: Include version, Python version, operating system family, and relevant commands or redacted output.
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you tried?
+      description: List documentation and troubleshooting steps already attempted.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched the documentation and existing issues.
+          required: true
+        - label: I removed credentials, conversation content, personal data, databases, and identifying local paths.
+          required: true
+        - label: This is not a security vulnerability or confidential commercial inquiry.
+          required: true
